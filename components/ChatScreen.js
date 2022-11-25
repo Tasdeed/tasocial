@@ -13,12 +13,15 @@ import {
   query,
   getDocs,
   getDoc,
+  where,
   serverTimestamp,
   setDoc,
   addDoc,
 } from "firebase/firestore";
 import Message from "./Message";
 import { useState } from "react";
+import getRecipientEmail from "../lib/getRecipientEmail";
+import TimeAgo from "timeago-react";
 
 export default function ChatScreen({ chat, messages }) {
   const [user] = useAuthState(auth);
@@ -32,6 +35,13 @@ export default function ChatScreen({ chat, messages }) {
   );
 
   const [messagesSnap] = useCollection(messagesQuery2);
+
+  const recipientQuery = query(
+    collection(db, "users"),
+    where("email", "==", getRecipientEmail(chat.users, user))
+  );
+
+  const [recipientSnap] = useCollection(recipientQuery);
 
   const messagesList = () => {
     if (messagesSnap) {
@@ -74,13 +84,31 @@ export default function ChatScreen({ chat, messages }) {
     setInput("");
   };
 
+  const recipientData = recipientSnap?.docs?.[0]?.data();
+  const recipient = getRecipientEmail(chat.users, user);
+
   return (
     <Container>
       <Header>
-        <Avatar />
+        {recipient ? (
+          <Avatar src={recipientData?.photoURL} />
+        ) : (
+          <Avatar>{recipient[0]}</Avatar>
+        )}
         <HeaderInformation>
-          <h3>Recipient Email</h3>
-          <p>Last Active</p>
+          <h3>{recipient}</h3>
+          {recipientSnap ? (
+            <p>
+              Last Active:{" "}
+              {recipientData?.lastSeen?.toDate() ? (
+                <TimeAgo datetime={recipientData?.lastSeen?.toDate()} />
+              ) : (
+                "N/A"
+              )}
+            </p>
+          ) : (
+            <p>Looking</p>
+          )}
         </HeaderInformation>
         <HeaderIcons>
           <IconButton>

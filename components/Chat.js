@@ -21,6 +21,7 @@ function Chat({ id, users }) {
   };
 
   const recipient = receivers?.docs?.[0]?.data();
+  console.log(recipient?.photoURL);
   const recipientEmail = getRecipientEmail(users, user);
 
   return (
