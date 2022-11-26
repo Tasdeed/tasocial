@@ -2,7 +2,14 @@ import styled from "styled-components";
 import Head from "next/head";
 import Sidebar from "../../components/Sidebar";
 import ChatScreen from "../../components/ChatScreen";
-import { collection, doc, orderBy, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  orderBy,
+  getDoc,
+  getDocs,
+  query,
+} from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import getRecipientEmail from "../../lib/getRecipientEmail";
@@ -28,14 +35,20 @@ export async function getServerSideProps(context) {
 
   //   have messages ready for users to click on server
 
-  const messagesRef = await getDocs(
-    collection(ChatsRef, "messages"),
-    orderBy("timestamp", "asc")
-  );
+  // const messagesRef = await getDocs(
+  //   collection(ChatsRef, "messages"),
+  //   orderBy("timestamp", "asc")
+  // );
   // messagesRef.forEach((doc) => {
   //   // doc.data() is never undefined for query doc snapshots
   //   console.log(doc.id, " => ", doc.data());
   // });
+
+  const messagesRef2 = query(
+    collection(ChatsRef, "messages"),
+    orderBy("timestamp")
+  );
+  const messagesRef = await getDocs(messagesRef2);
 
   const messages = messagesRef.docs
     .map((doc) => ({
