@@ -55,8 +55,6 @@ function Sidebar() {
         <SearchInput placeholder="Search" />
       </ChatSearch>
       <NewChatButton onClick={createChat}>New Chat</NewChatButton>
-
-      {/* Add Chats here later */}
       {chats?.docs.map((chat) => (
         <UserChat key={chat.id} id={chat.id} users={chat.data().users} />
       ))}
