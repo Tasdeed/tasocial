@@ -32,10 +32,10 @@ export async function getServerSideProps(context) {
     collection(ChatsRef, "messages"),
     orderBy("timestamp", "asc")
   );
-  messagesRef.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-  });
+  // messagesRef.forEach((doc) => {
+  //   // doc.data() is never undefined for query doc snapshots
+  //   console.log(doc.id, " => ", doc.data());
+  // });
 
   const messages = messagesRef.docs
     .map((doc) => ({
